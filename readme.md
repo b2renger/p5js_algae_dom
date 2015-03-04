@@ -2,7 +2,7 @@
 ______________________________
 
 First if you want to have an example of what it looks like you can check my github.io page :
-http://b2renger.github.io/
+
 
 This repo exhibits a simple example to be able to build a website using p5.js and p5.dom libraries.
 http://p5js.org/
@@ -16,7 +16,12 @@ On the right hanside of the page you have a canvas showing a map of nodes. Each 
 
 A nice feature is the tag system : when you over a tag, other pages that contains the same tag begin to pulse, but we will talk about it later.
 
-Let's check the example :
+you can check it out there : http://b2renger.github.io/
+
+The code in this repo is a website about cats & unicorns, I know you love it.
+
+To run it you'll need to run a server on your machine such as : http://www.pythonforbeginners.com/modules-in-python/how-to-use-simplehttpserver/
+
 
 
 

@@ -40,21 +40,32 @@ function setup() {
   nodes.push(new Node((width/2),(height/2),'HOME',true)); // true mean isAnchor (label always displayed)
   nodes[0].setProject("pages/home.csv");
   //1
-  nodes.push(new Node(random(width),random(height),'CAT VIDEOS',true));
+  nodes.push(new Node(random(width),random(height),'CATS',true));
   addConnection(0,random(longdistance,longdistance+longdistance/2));
-  nodes[1].setProject("pages/cat_videos.csv");
+  nodes[nodes.length-1].setProject("pages/cats.csv");
   //2
-  nodes.push(new Node(random(width),random(height),'PHOTOS',true));
+  nodes.push(new Node(random(width),random(height),'MUSIC',true));
   addConnection(0,random(longdistance,longdistance+longdistance/2));
-  nodes[2].setProject("pages/photos.csv");
+  nodes[nodes.length-1].setProject("pages/music.csv");
   //3
-  nodes.push(new Node(random(width),random(height),'LINKS',true));
+  nodes.push(new Node(random(width),random(height),'UNICORNS',true));
   addConnection(0,random(longdistance,longdistance+longdistance/2));
-  nodes[3].setProject("pages/links.csv");
-  //4
-  nodes.push(new Node(random(width),random(height),'AUDIO',true));
-  addConnection(0,random(longdistance,longdistance+longdistance/2));
-  nodes[3].setProject("pages/audio.csv");
+  nodes[nodes.length-1].setProject("pages/unicorns.csv");
+
+  //
+  nodes.push(new Node(random(width),random(height),'cat compil',true));
+  addConnection(1,random(longdistance,longdistance+longdistance/2));
+  nodes[nodes.length-1].setProject("pages/cat_compilations.csv");
+
+  nodes.push(new Node(random(width),random(height),'cat unicorn',true));
+  addConnection(1,random(longdistance,longdistance+longdistance/2));
+  addConnection(3,random(longdistance,longdistance+longdistance/2));
+  nodes[nodes.length-1].setProject("pages/cat_unicorn.csv");
+
+
+
+
+
 
   selectedNode = nodes[0];
 }
