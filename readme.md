@@ -96,7 +96,7 @@ Video, copy and paste embed code from youtube or vimeo,True,
 ```
 ## Add an audio file
 ```
-Audio, copy and paste embed code from dropbox,True,
+Audio, copy and paste embed code from soundcloud,True,
 
 ```
 ## Add an icon
@@ -116,6 +116,133 @@ Name of the link, link,True,
 ```
 
 # The code ?
+
+If you want to dive in it you'll need to know a bit about how processing works. I won't go deep in he processing code but rather explain the DOM parts.
+
+The **sketch.js** is where you want to start. *c_nodes.js* and *c_springs.js* are javascript classes to handle the physics, they are adapted from http://www.generative-gestaltung.de/M_6_1_03
+
+So nothing to declare before the use of the setPage() method in the mouseMoved() function :
+```javascript
+function mouseMoved() {
+   ...
+   setPage(selectedNode.page); // set the page with a custom parser function      
+   ...
+}
+```
+
+so when we are over a node we call a custom function, this function will take the csv file from the selectedNode and parse it to DOM elements.
+
+```javascript
+function setPage(project){
+
+  removeElements(); // clean everything
+
+  var row ; // to hold the table row
+  var str ; // hold the content of the data column
+  var type ; // hold the content of the type column
+  var linebreak; // hold the content of the linebreak column
+  var posY = -20; // keep track of where we're at building the page
+  var posX = 600;
+
+  for (var i = 1 ; i < project.getRowCount(); i++){
+    // get the row we're at
+    row = project.getRow(i);
+    // get it's content
+    type = row.getString(0);
+    str = row.getString(1); 
+    linebreak = row.getString(2);
+
+    // check type and do stuff
+    if (type == 'Title'){
+      var title = createElement('h1',str); // create the corresponding element
+      title.style(cssTitle); // apply custom css
+      title.position(posX,posY); // move to position
+
+      // set next position accorgin to linebeak
+      if (linebreak == 'True' || linebreak == ' True'){
+        posY += title.height  ;
+        posX = 600;
+      } else {
+        posX += title.width;
+      }
+    }
+    // next case ...
+    ...
+
+}
+
+```
+Our for loop will make us iterate through every element of our csv file, and everything that doesn't fit one of the tests on the type will be a link !
+
+
+# And what about this tag system mentionned earlier ?
+
+Right ! Just to add more fun, in the setPage() method we add a little twist when it comes to tags
+
+```javascript
+else if (type == 'Tags'){
+      var p = createP(str);
+      p.style(cssTags);
+      p.size(140,AUTO);
+      p.position(posX,posY);
+  
+      p.mouseOver(check); // a custom listener when we over a tag !
+
+      if (linebreak == 'True' || linebreak == ' True'){
+        posY += p.height ;
+        posX = 600;
+      } else {
+        posX += p.width;
+      }
+  }
+``` 
+
+Yes right in the middle we have :
+```javascript
+ p.mouseOver(check); // a custom listener when we over a tag !
+```
+
+This is how we add a listener to an element in js. So each time an element created with type 'Tags' is overed by the user it will call the check function.
+
+So we need to check all the nodes we have and all the pages, we also need to inspect every row of every csv files to check the tags, and if we find the same tag, we change something to our node. This means two for loops in a row.
+
+Notice the 'param' at the declaration of the check() function, this means that we can get access to the event passed when the function is called. This is in fact a mouseEvent, but you can get its target using **.curentTarget** and its target's html content **.innerHTML**. So by calling **param.currentTarget.innerHTML** i managed to get a String which is the tag we are looking for.
+
+
+```javascript
+function check(param){
+
+  // get every page
+  for (var i = 0 ; i < nodes.length ; i++){
+    var checkpage = nodes[i].page;
+    nodes[i].highlight = false; // reset every node
+    
+    // get every row
+    for (var j = 0 ; j < checkpage.getRowCount() ; j++){
+      var checkrow = checkpage.getRow(j);
+      // check the tags
+      if(checkrow.getString(0) == 'Tags'){
+        // if the content equals the innerHTML of the object passed to the function
+        if(checkrow.getString(1) == param.currentTarget.innerHTML){
+          nodes[i].highlight = true; // do pulse
+        }
+      }
+    }
+  }
+}
+```
+
+So when we find an element we set the higlight mode on.
+
+
+
+
+
+
+
+
+
+
 
 
 

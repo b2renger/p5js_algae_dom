@@ -158,6 +158,19 @@ function setPage(project){
       }
     }
 
+    else if (type == 'Audio'){
+      var sound = createDiv(str,dummy); // we create a div instead of a video element, because we want to embed the player too
+      sound.style(cssTitle);
+      sound.position(posX,posY);
+
+      if (linebreak == 'True' || linebreak == ' True'){
+        posY += sound.height ;
+        posX = 600;
+      } else {
+        posX += sound.width;
+      }
+    }
+
     else if (type == 'Paragraph'){
       var description = createP(str);
       description.style(cssParagraph);
