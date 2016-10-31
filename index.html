@@ -1,27 +1,292 @@
-<head>
-  <script language="javascript" src="p5.min.js"></script>
-  <!-- uncomment lines below to include extra p5 libraries -->
-	<script language="javascript" src="addons/p5.dom.js"></script>
-  <!--<script language="javascript" src="addons/p5.sound.js"></script>-->
-  <script language="javascript" src="sketch.js"></script>
-  <script language="javascript" src="c_node.js"></script>
-  <script language="javascript" src="c_spring.js"></script>
-  <!-- choose a custom font -->
-  <link href='http://fonts.googleapis.com/css?family=Open+Sans+Condensed:700' rel='stylesheet' type='text/css'>
+<!DOCTYPE html>
+<html>
 
-  
-	
-  <!-- this line removes any default padding and style. you might only need one of these values set. -->
-  <style> body {padding: 0; margin: 0;} </style>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="P5js algae dom : An example to build a node-map like website with p5.js">
 
-  <script>
-  <!-- be sure to call the init function to load the home page -->
-  setTimeout(init, 500); 
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
-  </script>
-  
-</head>
+    <title>P5js algae dom</title>
+  </head>
 
-<body>
+  <body>
 
-</body>
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/b2renger/p5js_algae_dom">View on GitHub</a>
+
+          <h1 id="project_title">P5js algae dom</h1>
+          <h2 id="project_tagline">An example to build a node-map like website with p5.js</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/b2renger/p5js_algae_dom/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/b2renger/p5js_algae_dom/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a id="alagae-dom-with-p5js" class="anchor" href="#alagae-dom-with-p5js" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Alagae-DOM with p5.js</h1>
+
+<hr>
+
+<p>First if you want to have an example of what it looks like you can check my github.io page :</p>
+
+<p>This repo exhibits a simple example to be able to build a website using p5.js and p5.dom libraries.
+<a href="http://p5js.org/">http://p5js.org/</a>
+<a href="http://p5js.org/download/">http://p5js.org/download/</a>
+<a href="http://p5js.org/reference/#/libraries/p5.dom">http://p5js.org/reference/#/libraries/p5.dom</a></p>
+
+<h1>
+<a id="how-does-it-work-" class="anchor" href="#how-does-it-work-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>How does it work ?</h1>
+
+<p>On the right hanside of the page you have a canvas showing a map of nodes. Each node should be seen as a category, or a page. We bind each node to a csv file, this csv file contains the content of your page, when you over a node in the left part of the screen : DOM elements will be created in the right side of your page according to your specifications.</p>
+
+<p>A nice feature is the tag system : when you over a tag, other pages that contains the same tag begin to pulse, but we will talk about it later.</p>
+
+<p>you can check it out there : <a href="http://b2renger.github.io/">http://b2renger.github.io/</a></p>
+
+<p>The code in this repo is a website about cats &amp; unicorns, I know you love it.</p>
+
+<p>To run it you'll need to run a server on your machine such as : <a href="http://www.pythonforbeginners.com/modules-in-python/how-to-use-simplehttpserver/">http://www.pythonforbeginners.com/modules-in-python/how-to-use-simplehttpserver/</a></p>
+
+<h1>
+<a id="how-to-write-a-csv-file-" class="anchor" href="#how-to-write-a-csv-file-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>How to write a csv file ?</h1>
+
+<p>To write a csv file you need to start with a header :</p>
+
+<pre><code>type, data, linebreak,
+</code></pre>
+
+<p>Then for each element you want to add you need to add the type (Paragraph, Video, Image ...), the data (link, code, text ...), and specify if you want to create next element below (you must write True in the linebreak column), or next to, the previous one.</p>
+
+<p>For instance if you want to create a title for your page you can write :</p>
+
+<pre><code>Title, My very cool website,True,
+
+</code></pre>
+
+<p>Then you just need to save it as a csv file, in the page folder.</p>
+
+<h1>
+<a id="how-to-add-a-node-to-my-map-" class="anchor" href="#how-to-add-a-node-to-my-map-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>How to add a node to my map ?</h1>
+
+<p>You'll need to add a few lines of code to the sketch.js file in order to do that.</p>
+
+<p>First look for the setup function :</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">function</span> <span class="pl-en">setup</span>() {
+<span class="pl-k">...</span>
+}
+</pre></div>
+
+<p>This will initiate our map and nodes. </p>
+
+<p>First : to add a node you need to pass four arguments : its coordinates (x and y values), its name (as a string), and a boolean.This last parameter enables to differentiate 'anchor nodes' from 'non anchor nodes', this just means that 'anchor nodes' will always have their label (with their Names) displayed.</p>
+
+<p>Second : you need to link the node to a csv file by calling the setProject() method on this node, it just needs to be given the path to the rightfull csv file.</p>
+
+<p>Third : you need to link the node create on the canvas to other nodes by calling the addConnection() method. You need to pass the id of the node, and the length of the connection.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-smi">nodes</span>.<span class="pl-c1">push</span>(<span class="pl-k">new</span> <span class="pl-en">Node</span>((width<span class="pl-k">/</span><span class="pl-c1">2</span>),(height<span class="pl-k">/</span><span class="pl-c1">2</span>),<span class="pl-s"><span class="pl-pds">'</span>My New Category<span class="pl-pds">'</span></span>,<span class="pl-c1">true</span>)); <span class="pl-c">// create.</span>
+nodes[<span class="pl-smi">nodes</span>.<span class="pl-c1">length</span><span class="pl-k">-</span><span class="pl-c1">1</span>].<span class="pl-en">setProject</span>(<span class="pl-s"><span class="pl-pds">"</span>pages/new-category.csv<span class="pl-pds">"</span></span>); <span class="pl-c">// link to csv.</span>
+nodes[<span class="pl-smi">nodes</span>.<span class="pl-c1">length</span><span class="pl-k">-</span><span class="pl-c1">1</span>].<span class="pl-en">addConnection</span>(<span class="pl-c1">0</span>,<span class="pl-c1">150</span>); <span class="pl-c">// link to other nodes. 0 is home</span></pre></div>
+
+<h1>
+<a id="add-elements-api-to-help-you-write-csv-files" class="anchor" href="#add-elements-api-to-help-you-write-csv-files" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Add elements API to help you write csv files</h1>
+
+<h2>
+<a id="add-a-title" class="anchor" href="#add-a-title" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Add a title</h2>
+
+<pre><code>Title, My very cool website,True,
+
+</code></pre>
+
+<h2>
+<a id="add-an-image" class="anchor" href="#add-an-image" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Add an image</h2>
+
+<pre><code>Image, link to my image,True,
+
+</code></pre>
+
+<h2>
+<a id="add-a-paragraph" class="anchor" href="#add-a-paragraph" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Add a paragraph</h2>
+
+<pre><code>Paragraph, my text ... (no comas in there !),True,
+
+</code></pre>
+
+<h2>
+<a id="add-a-jump" class="anchor" href="#add-a-jump" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Add a jump</h2>
+
+<pre><code>Jump, , ,
+
+</code></pre>
+
+<h2>
+<a id="add-a-video" class="anchor" href="#add-a-video" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Add a video</h2>
+
+<pre><code>Video, copy and paste embed code from youtube or vimeo,True,
+
+</code></pre>
+
+<h2>
+<a id="add-an-audio-file" class="anchor" href="#add-an-audio-file" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Add an audio file</h2>
+
+<pre><code>Audio, copy and paste embed code from soundcloud,True,
+
+</code></pre>
+
+<h2>
+<a id="add-an-icon" class="anchor" href="#add-an-icon" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Add an icon</h2>
+
+<pre><code>Icon, link to your icon,True,
+
+</code></pre>
+
+<h2>
+<a id="add-a-tag" class="anchor" href="#add-a-tag" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Add a tag</h2>
+
+<pre><code>Tags, #yourTag,True,
+
+</code></pre>
+
+<h2>
+<a id="add-a-link" class="anchor" href="#add-a-link" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Add a link</h2>
+
+<pre><code>Name of the link, link,True,
+
+</code></pre>
+
+<h1>
+<a id="the-code-" class="anchor" href="#the-code-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The code ?</h1>
+
+<p>If you want to dive in it you'll need to know a bit about how processing works. I won't go deep in he processing code but rather explain the DOM parts.</p>
+
+<p>The <strong>sketch.js</strong> is where you want to start. <em>c_nodes.js</em> and <em>c_springs.js</em> are javascript classes to handle the physics, they are adapted from <a href="http://www.generative-gestaltung.de/M_6_1_03">http://www.generative-gestaltung.de/M_6_1_03</a></p>
+
+<p>So nothing to declare before the use of the setPage() method in the mouseMoved() function :</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">function</span> <span class="pl-en">mouseMoved</span>() {
+   <span class="pl-k">...</span>
+   <span class="pl-en">setPage</span>(<span class="pl-smi">selectedNode</span>.<span class="pl-smi">page</span>); <span class="pl-c">// set the page with a custom parser function      </span>
+   <span class="pl-k">...</span>
+}</pre></div>
+
+<p>so when we are over a node we call a custom function, this function will take the csv file from the selectedNode and parse it to DOM elements.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">function</span> <span class="pl-en">setPage</span>(<span class="pl-smi">project</span>){
+
+  <span class="pl-en">removeElements</span>(); <span class="pl-c">// clean everything</span>
+
+  <span class="pl-k">var</span> row ; <span class="pl-c">// to hold the table row</span>
+  <span class="pl-k">var</span> str ; <span class="pl-c">// hold the content of the data column</span>
+  <span class="pl-k">var</span> type ; <span class="pl-c">// hold the content of the type column</span>
+  <span class="pl-k">var</span> linebreak; <span class="pl-c">// hold the content of the linebreak column</span>
+  <span class="pl-k">var</span> posY <span class="pl-k">=</span> <span class="pl-k">-</span><span class="pl-c1">20</span>; <span class="pl-c">// keep track of where we're at building the page</span>
+  <span class="pl-k">var</span> posX <span class="pl-k">=</span> <span class="pl-c1">600</span>;
+
+  <span class="pl-k">for</span> (<span class="pl-k">var</span> i <span class="pl-k">=</span> <span class="pl-c1">1</span> ; i <span class="pl-k">&lt;</span> <span class="pl-smi">project</span>.<span class="pl-en">getRowCount</span>(); i<span class="pl-k">++</span>){
+    <span class="pl-c">// get the row we're at</span>
+    row <span class="pl-k">=</span> <span class="pl-smi">project</span>.<span class="pl-en">getRow</span>(i);
+    <span class="pl-c">// get it's content</span>
+    type <span class="pl-k">=</span> <span class="pl-smi">row</span>.<span class="pl-en">getString</span>(<span class="pl-c1">0</span>);
+    str <span class="pl-k">=</span> <span class="pl-smi">row</span>.<span class="pl-en">getString</span>(<span class="pl-c1">1</span>); 
+    linebreak <span class="pl-k">=</span> <span class="pl-smi">row</span>.<span class="pl-en">getString</span>(<span class="pl-c1">2</span>);
+
+    <span class="pl-c">// check type and do stuff</span>
+    <span class="pl-k">if</span> (type <span class="pl-k">==</span> <span class="pl-s"><span class="pl-pds">'</span>Title<span class="pl-pds">'</span></span>){
+      <span class="pl-k">var</span> title <span class="pl-k">=</span> <span class="pl-en">createElement</span>(<span class="pl-s"><span class="pl-pds">'</span>h1<span class="pl-pds">'</span></span>,str); <span class="pl-c">// create the corresponding element</span>
+      <span class="pl-smi">title</span>.<span class="pl-c1">style</span>(cssTitle); <span class="pl-c">// apply custom css</span>
+      <span class="pl-smi">title</span>.<span class="pl-en">position</span>(posX,posY); <span class="pl-c">// move to position</span>
+
+      <span class="pl-c">// set next position accorgin to linebeak</span>
+      <span class="pl-k">if</span> (linebreak <span class="pl-k">==</span> <span class="pl-s"><span class="pl-pds">'</span>True<span class="pl-pds">'</span></span> <span class="pl-k">||</span> linebreak <span class="pl-k">==</span> <span class="pl-s"><span class="pl-pds">'</span> True<span class="pl-pds">'</span></span>){
+        posY <span class="pl-k">+=</span> <span class="pl-smi">title</span>.<span class="pl-c1">height</span>  ;
+        posX <span class="pl-k">=</span> <span class="pl-c1">600</span>;
+      } <span class="pl-k">else</span> {
+        posX <span class="pl-k">+=</span> <span class="pl-smi">title</span>.<span class="pl-c1">width</span>;
+      }
+    }
+    <span class="pl-c">// next case ...</span>
+    <span class="pl-k">...</span>
+
+}
+</pre></div>
+
+<p>Our for loop will make us iterate through every element of our csv file, and everything that doesn't fit one of the tests on the type will be a link !</p>
+
+<h1>
+<a id="and-what-about-this-tag-system-mentionned-earlier-" class="anchor" href="#and-what-about-this-tag-system-mentionned-earlier-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>And what about this tag system mentionned earlier ?</h1>
+
+<p>Right ! Just to add more fun, in the setPage() method we add a little twist when it comes to tags</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">else</span> <span class="pl-k">if</span> (type <span class="pl-k">==</span> <span class="pl-s"><span class="pl-pds">'</span>Tags<span class="pl-pds">'</span></span>){
+      <span class="pl-k">var</span> p <span class="pl-k">=</span> <span class="pl-en">createP</span>(str);
+      <span class="pl-smi">p</span>.<span class="pl-c1">style</span>(cssTags);
+      <span class="pl-smi">p</span>.<span class="pl-c1">size</span>(<span class="pl-c1">140</span>,<span class="pl-c1">AUTO</span>);
+      <span class="pl-smi">p</span>.<span class="pl-en">position</span>(posX,posY);
+
+      <span class="pl-smi">p</span>.<span class="pl-en">mouseOver</span>(check); <span class="pl-c">// a custom listener when we over a tag !</span>
+
+      <span class="pl-k">if</span> (linebreak <span class="pl-k">==</span> <span class="pl-s"><span class="pl-pds">'</span>True<span class="pl-pds">'</span></span> <span class="pl-k">||</span> linebreak <span class="pl-k">==</span> <span class="pl-s"><span class="pl-pds">'</span> True<span class="pl-pds">'</span></span>){
+        posY <span class="pl-k">+=</span> <span class="pl-smi">p</span>.<span class="pl-c1">height</span> ;
+        posX <span class="pl-k">=</span> <span class="pl-c1">600</span>;
+      } <span class="pl-k">else</span> {
+        posX <span class="pl-k">+=</span> <span class="pl-smi">p</span>.<span class="pl-c1">width</span>;
+      }
+  }</pre></div>
+
+<p>Yes right in the middle we have :</p>
+
+<div class="highlight highlight-source-js"><pre> <span class="pl-smi">p</span>.<span class="pl-en">mouseOver</span>(check); <span class="pl-c">// a custom listener when we over a tag !</span></pre></div>
+
+<p>This is how we add a listener to an element in js. So each time an element created with type 'Tags' is overed by the user it will call the check function.</p>
+
+<p>So we need to check all the nodes we have and all the pages, we also need to inspect every row of every csv files to check the tags, and if we find the same tag, we change something to our node. This means two for loops in a row.</p>
+
+<p>Notice the 'param' at the declaration of the check() function, this means that we can get access to the event passed when the function is called. This is in fact a mouseEvent, but you can get its target using <strong>.curentTarget</strong> and its target's html content <strong>.innerHTML</strong>. So by calling <strong>param.currentTarget.innerHTML</strong> i managed to get a String which is the tag we are looking for.</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">function</span> <span class="pl-en">check</span>(<span class="pl-smi">param</span>){
+
+  <span class="pl-c">// get every page</span>
+  <span class="pl-k">for</span> (<span class="pl-k">var</span> i <span class="pl-k">=</span> <span class="pl-c1">0</span> ; i <span class="pl-k">&lt;</span> <span class="pl-smi">nodes</span>.<span class="pl-c1">length</span> ; i<span class="pl-k">++</span>){
+    <span class="pl-k">var</span> checkpage <span class="pl-k">=</span> nodes[i].<span class="pl-smi">page</span>;
+    nodes[i].<span class="pl-smi">highlight</span> <span class="pl-k">=</span> <span class="pl-c1">false</span>; <span class="pl-c">// reset every node</span>
+
+    <span class="pl-c">// get every row</span>
+    <span class="pl-k">for</span> (<span class="pl-k">var</span> j <span class="pl-k">=</span> <span class="pl-c1">0</span> ; j <span class="pl-k">&lt;</span> <span class="pl-smi">checkpage</span>.<span class="pl-en">getRowCount</span>() ; j<span class="pl-k">++</span>){
+      <span class="pl-k">var</span> checkrow <span class="pl-k">=</span> <span class="pl-smi">checkpage</span>.<span class="pl-en">getRow</span>(j);
+      <span class="pl-c">// check the tags</span>
+      <span class="pl-k">if</span>(<span class="pl-smi">checkrow</span>.<span class="pl-en">getString</span>(<span class="pl-c1">0</span>) <span class="pl-k">==</span> <span class="pl-s"><span class="pl-pds">'</span>Tags<span class="pl-pds">'</span></span>){
+        <span class="pl-c">// if the content equals the innerHTML of the object passed to the function</span>
+        <span class="pl-k">if</span>(<span class="pl-smi">checkrow</span>.<span class="pl-en">getString</span>(<span class="pl-c1">1</span>) <span class="pl-k">==</span> <span class="pl-smi">param</span>.<span class="pl-smi">currentTarget</span>.<span class="pl-smi">innerHTML</span>){
+          nodes[i].<span class="pl-smi">highlight</span> <span class="pl-k">=</span> <span class="pl-c1">true</span>; <span class="pl-c">// do pulse</span>
+        }
+      }
+    }
+  }
+}</pre></div>
+
+<p>So when we find an element we set the higlight mode on.</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">P5js algae dom maintained by <a href="https://github.com/b2renger">b2renger</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
